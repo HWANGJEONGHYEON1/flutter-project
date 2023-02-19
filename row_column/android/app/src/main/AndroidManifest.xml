@@ -1,9 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.row_column">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="row_column"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:useCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"

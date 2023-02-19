@@ -1,92 +1,39 @@
+
 import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  final homeUrl = 'https://hwangjeonghyeon1.github.io';
+  WebViewController? controller;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Container(
-          color: Colors.black,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Container(
-                    color: Colors.grey,
-                    height: 50.0,
-                    width: 50.0,
-                  ),
-                  Container(
-                    color: Colors.blue,
-                    height: 50.0,
-                    width: 50.0,
-                  ),
-                  Container(
-                    color: Colors.green,
-                    height: 50.0,
-                    width: 50.0,
-                  ),
-                  Container(
-                    color: Colors.pink,
-                    height: 50.0,
-                    width: 50.0,
-                  )
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    color: Colors.orange,
-                    height: 50.0,
-                    width: 50.0,
-                  )
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Container(
-                    color: Colors.grey,
-                    height: 50.0,
-                    width: 50.0,
-                  ),
-                  Container(
-                    color: Colors.blue,
-                    height: 50.0,
-                    width: 50.0,
-                  ),
-                  Container(
-                    color: Colors.green,
-                    height: 50.0,
-                    width: 50.0,
-                  ),
-                  Container(
-                    color: Colors.pink,
-                    height: 50.0,
-                    width: 50.0,
-                  )
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    color: Colors.greenAccent,
-                    height: 50.0,
-                    width: 50.0,
-                  )
-                ],
-              )
-            ],
-
-          ),
-        ),
+      appBar: AppBar(
+        title: Text('Hwang Leader'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+              onPressed: () {
+                if (controller == null) {
+                  return ;
+                }
+                controller!.loadUrl(homeUrl);
+              },
+              icon: Icon(
+                Icons.home
+              ))
+        ],
       ),
+      body: WebView(
+        onWebViewCreated: (WebViewController controller) {
+          this.controller = controller;
+        },
+        initialUrl: homeUrl,
+        javascriptMode: JavascriptMode.unrestricted,
+      )
+
     );
+
   }
 }
