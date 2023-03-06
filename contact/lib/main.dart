@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(MaterialApp(
+      home:
+        MyApp()
+    ));
 }
 
 class MyApp extends StatefulWidget {
@@ -17,8 +20,14 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return  Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            showDialog(context: context, builder: (context) {
+              return Dialog(child: Text('아녕'),);
+            });
+          },
+        ),
         appBar: AppBar(),
         body: ListView.builder(
             itemCount: 3,
@@ -38,8 +47,7 @@ class _MyAppState extends State<MyApp> {
               );
             }),
         bottomNavigationBar: BottomAppBar(),
-      ),
-    );
+      );
   }
 }
 
