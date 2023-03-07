@@ -15,8 +15,22 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  var total = 3;
   var name = ['홍길동', '황뽀롱', '황뽀이'];
   var likeArr = [0, 0, 0];
+
+  void addTotal() {
+    setState(() {
+      total = total + 2;
+    });
+  }
+
+  addFriend(String value) {
+    setState(() {
+      name.add(value);
+      likeArr.add(0);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +38,13 @@ class _MyAppState extends State<MyApp> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             showDialog(context: context, builder: (context) {
-              return Dialog(child: Text('아녕'),);
+              return DialogUi(likeArr: likeArr, addOne: addTotal, addName: addFriend);
             });
           },
         ),
-        appBar: AppBar(),
+        appBar: AppBar( title: Text(total.toString()),),
         body: ListView.builder(
-            itemCount: 3,
+            itemCount: name.length,
             itemBuilder: (context, i){
               return
                 ListTile(
@@ -50,6 +64,40 @@ class _MyAppState extends State<MyApp> {
       );
   }
 }
+
+class DialogUi extends StatelessWidget {
+  final likeArr;
+  final addOne;
+  var inputData = TextEditingController();
+  var addName;
+
+  DialogUi({this.likeArr, this.addOne, this.addName, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Contact'),
+      content: TextField(controller: inputData,),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(context, 'Cancel'),
+            child: Text('cancel')
+        ),
+        TextButton(
+            onPressed: () {
+              addOne();
+              if (inputData.text.isNotEmpty) {
+                addName(inputData.text);
+              }
+              Navigator.pop(context, 'OK');
+            },
+            child: Text('ok')
+        ),
+      ],
+    );
+  }
+}
+
 
 class BottomAppBar extends StatelessWidget {
   const BottomAppBar({Key? key}) : super(key: key);
