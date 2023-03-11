@@ -32,6 +32,13 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  removeFriend(String removeName, int index) {
+    setState(() {
+      name.remove(removeName);
+      likeArr.remove(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -51,10 +58,10 @@ class _MyAppState extends State<MyApp> {
                     leading: Text(likeArr[i].toString()),
                     title: Text(name[i]),
                     trailing: ElevatedButton(
-                      child: Text('좋아요'),
+                      child: Text('삭제'),
                       onPressed: () {
                         setState(() {
-                          likeArr[i]++;
+                          removeFriend(name[i], i);
                         });
                       },
                     ),
