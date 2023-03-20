@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:contacts_service/contacts_service.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -15,8 +17,32 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var total = 3;
-  var name = ['홍길동', '황뽀롱', '황뽀이'];
+
+  getPermission() async {
+    var status = await Permission.contacts.status;
+    if (status.isGranted) {
+      print('허락됨');
+      var contacts = await ContactsService.getContacts();
+      setState(() {
+        name = contacts;
+      });
+
+    } else if (status.isDenied) {
+      print('거절됨');
+      // Permission.contacts.request();
+      // openAppSettings();
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getPermission();
+  }
+
+  int total = 3;
+  List<Contact> name = [];
   var likeArr = [0, 0, 0];
 
   void addTotal() {
@@ -27,15 +53,17 @@ class _MyAppState extends State<MyApp> {
 
   addFriend(String value) {
     setState(() {
-      name.add(value);
-      likeArr.add(0);
+      var newPerson = new Contact();
+      newPerson.givenName = value;
+      ContactsService.addContact(newPerson);
+      name.add(newPerson);
     });
   }
 
   removeFriend(String removeName, int index) {
     setState(() {
-      name.remove(removeName);
-      likeArr.remove(index);
+      // name.remove(index);
+      // likeArr.remove(index);
     });
   }
 
@@ -45,23 +73,27 @@ class _MyAppState extends State<MyApp> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             showDialog(context: context, builder: (context) {
-              return DialogUi(likeArr: likeArr, addOne: addTotal, addName: addFriend);
+              return DialogUi(likeArr: likeArr, addOne: addTotal, addFriend: addFriend);
             });
           },
         ),
-        appBar: AppBar( title: Text(total.toString()),),
+        appBar: AppBar( title: Text(total.toString()), actions: [
+          IconButton(onPressed: () {
+            getPermission();
+          }, icon: Icon(Icons.contacts))
+        ],),
         body: ListView.builder(
             itemCount: name.length,
             itemBuilder: (context, i){
               return
                 ListTile(
-                    leading: Text(likeArr[i].toString()),
-                    title: Text(name[i]),
+                    leading: Text(name[i].familyName ?? '이름없음'),
+                    title: Text(name[i].givenName.toString()),
                     trailing: ElevatedButton(
                       child: Text('삭제'),
                       onPressed: () {
                         setState(() {
-                          removeFriend(name[i], i);
+                          // removeFriend(name[i].givenName, i);
                         });
                       },
                     ),
@@ -76,9 +108,9 @@ class DialogUi extends StatelessWidget {
   final likeArr;
   final addOne;
   var inputData = TextEditingController();
-  var addName;
+  var addFriend;
 
-  DialogUi({this.likeArr, this.addOne, this.addName, Key? key}) : super(key: key);
+  DialogUi({this.likeArr, this.addOne, this.addFriend, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +126,7 @@ class DialogUi extends StatelessWidget {
             onPressed: () {
               addOne();
               if (inputData.text.isNotEmpty) {
-                addName(inputData.text);
+                addFriend(inputData.text);
               }
               Navigator.pop(context, 'OK');
             },
