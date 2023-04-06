@@ -10,7 +10,6 @@ void main() {
           displayLarge: TextStyle(
               color: Colors.white, fontFamily: 'parisienne', fontSize: 80.0
           ),
-          displayMedium:
         )
       ),
       home: HomeScreen(),
