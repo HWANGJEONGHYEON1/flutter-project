@@ -23,26 +23,38 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class HomeBody extends StatefulWidget {
-  const HomeBody({Key? key, this.data}) : super(key: key);
+class Home extends StatefulWidget {
+  const Home({Key? key, this.data, this.addData}) : super(key: key);
   final data;
+  final addData;
 
   @override
-  State<HomeBody> createState() => _HomeBodyState();
+  State<Home> createState() => _HomeState();
 }
 
-class _HomeBodyState extends State<HomeBody> {
+class _HomeState extends State<Home> {
 
   var scroll = ScrollController();
+  bool requestIng = false;
+
+  getMore() async {
+    var result = await http.get(Uri.parse('https://codingapple1.github.io/app/more2.json'));
+    if (result.statusCode == 200) {
+      requestIng = true;
+    }
+
+    if (requestIng) {
+      widget.addData(jsonDecode(result.body));
+    }
+  }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     scroll.addListener(() {
       if (scroll.position.pixels == scroll.position.maxScrollExtent) {
         print('끝임');
-
+        getMore();
       }
     });
   }
@@ -72,6 +84,12 @@ class _MyAppState extends State<MyApp> {
   var tab = 0;
   var data = [];
 
+  addData(moreData) {
+    setState((){
+      data.add(moreData);
+    });
+  }
+
   getData() async {
     var result = await http.get(Uri.parse('https://codingapple1.github.io/app/data.json'));
 
@@ -99,14 +117,18 @@ class _MyAppState extends State<MyApp> {
           title: Text('Instagram', style: textBlack,),
           actions: [
             IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Upload())
+                  );
+                },
                 icon: Icon(Icons.add_box_outlined),
                 iconSize: 30,
             )
           ],
         ),
       body: [
-        HomeBody(data : data),
+        Home(data: data, addData : addData),
         Text('shop')
       ][tab],
       bottomNavigationBar: BottomNavigationBar(
@@ -124,5 +146,27 @@ class _MyAppState extends State<MyApp> {
       ),
     );
   }
+}
+
+class Upload extends StatelessWidget {
+  const Upload({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+      appBar: AppBar(),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('이미지 업로드 화면'),
+          IconButton(icon: Icon(Icons.close), onPressed: () {
+            Navigator.pop(context);
+          })
+        ],
+      ),
+    );
+  }
+
 }
 
