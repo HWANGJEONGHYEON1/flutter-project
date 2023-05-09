@@ -69,9 +69,19 @@ class _HomeState extends State<Home> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.network(widget.data[i]['image'],),
-            Text('좋아요 ${widget.data[i]['likes'].toString()}'),
-            Text(widget.data[i]['user']),
-            Text(widget.data[i]['content'])
+            Container(
+              constraints: BoxConstraints(maxWidth: 600),
+              padding: EdgeInsets.all(20),
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('좋아요 ${widget.data[i]['likes'].toString()}'),
+                  Text(widget.data[i]['user']),
+                  Text(widget.data[i]['content'])
+                ],
+              ),
+            )
           ],
         );
       });
